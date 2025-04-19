@@ -1,0 +1,512 @@
+{
+	"info": {
+		"_postman_id": "8b3273db-b19e-4c6d-88ed-79c39721a91b",
+		"name": "API Collection",
+		"description": "### Collection Summary\n\n---\n\n#### 1\\. **POST /api/auth/login**\n\n- **Purpose**: Used for user login.\n    \n- jsonCopyEdit{ \"username\": \"user_example\", \"password\": \"password_example\"}\n    \n- **Response**:\n    \n    - **200 OK**: Success, returns an authentication token.\n        \n    - **401 Unauthorized**: Invalid credentials.\n        \n\n---\n\n#### 2\\. **POST /api/auth/signup**\n\n- **Purpose**: Used for user registration.\n    \n- jsonCopyEdit{ \"username\": \"new_user_example\", \"password\": \"new_password_example\"}\n    \n- **Response**:\n    \n    - **201 Created**: Success, returns user details.\n        \n    - **400 Bad Request**: Missing/invalid parameters.\n        \n\n---\n\n#### 3\\. **GET /api/posts**\n\n- **Purpose**: Fetches a list of posts.\n    \n- **Query Parameters** (Optional):\n    \n    - **page**: (Number) The page of results (pagination).\n        \n    - **limit**: (Number) Number of posts per page.\n        \n- **Response**:\n    \n    - **200 OK**: Returns an array of posts with details (Title, Content, Comments).\n        \n    - **404 Not Found**: No posts found.\n        \n\n---\n\n#### 4\\. **POST /api/posts**\n\n- **Purpose**: Create a new post.\n    \n- jsonCopyEdit{ \"title\": \"New Post Title\", \"content\": \"This is the content of the post.\"}\n    \n- **Response**:\n    \n    - **201 Created**: Returns the newly created post object (ID, Title, Content, etc.).\n        \n    - **400 Bad Request**: Missing title/content.\n        \n\n---\n\n#### 5\\. **POST /api/posts/:postId/comments**\n\n- **Purpose**: Create a new comment on a specific post.\n    \n- jsonCopyEdit{ \"comment\": \"This is a comment on the post.\"}\n    \n- **Response**:\n    \n    - **201 Created**: Returns the new comment object (Comment ID, Comment Text).\n        \n    - **404 Not Found**: If the post doesn't exist.\n        \n\n---\n\n#### 6\\. **POST /api/admin/comments/:commentId/approve**\n\n- **Purpose**: Admin endpoint to approve a comment.\n    \n- **Response**:\n    \n    - **200 OK**: Comment approved.\n        \n    - **404 Not Found**: Comment not found.\n        \n    - **403 Forbidden**: If the user is not an admin.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30965738"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseStatusCode = pm.response.code;\r",
+									"var responseData = JSON.parse(responseBody);\r",
+									"var resultData = responseData;\r",
+									"if(responseStatusCode == 200){\r",
+									"    var accessToken = resultData.data.token;\r",
+									"    pm.collectionVariables.set(\"authToken\", accessToken);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"emailOrUserName\": \"Piyush1\", \"password\": \"Test@123\"}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"emailOrUserName\": \"Piyush1\", \"password\": \"Test@123\"}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"message\": \"Login Successfully\",\r\n    \"data\": {\r\n        \"token\": \"token\"\r\n    }\r\n}"
+						},
+						{
+							"name": "error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"emailOrUserName\": \"Piyush1\", \"password\": \"Test@123\"}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"success\": false,\r\n    \"statusCode\": 404,\r\n    \"message\": \"Account does not exist\"\r\n}"
+						}
+					]
+				},
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\": \"new_user_example\", \"password\": \"new_password_example\"}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "Get Posts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/posts/get-post?page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"posts",
+								"get-post"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/posts/get-post?page=1&limit=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"posts",
+										"get-post"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"message\": \"\",\r\n    \"data\": [\r\n        {\r\n            \"_id\": \"680284ef505aaf9d0d488071\",\r\n            \"userId\": {\r\n                \"_id\": \"680284b4505aaf9d0d48805c\",\r\n                \"emailOrUserName\": \"Piyush2\"\r\n            },\r\n            \"title\": \"New Post \",\r\n            \"content\": \"New Post Description @ @\",\r\n            \"createdAt\": \"2025-04-18T16:59:27.118Z\",\r\n            \"updatedAt\": \"2025-04-18T16:59:27.118Z\",\r\n            \"__v\": 0,\r\n            \"comments\": 0\r\n        },\r\n        {\r\n            \"_id\": \"68028484505aaf9d0d48804f\",\r\n            \"userId\": {\r\n                \"_id\": \"68028448505aaf9d0d488047\",\r\n                \"emailOrUserName\": \"Piyush1\"\r\n            },\r\n            \"title\": \"Dummy Post 3\",\r\n            \"content\": \"Dummy Post 3 Description\",\r\n            \"createdAt\": \"2025-04-18T16:57:40.835Z\",\r\n            \"updatedAt\": \"2025-04-18T16:57:40.835Z\",\r\n            \"__v\": 0,\r\n            \"comments\": 0\r\n        },\r\n        {\r\n            \"_id\": \"6802847b505aaf9d0d48804d\",\r\n            \"userId\": {\r\n                \"_id\": \"68028448505aaf9d0d488047\",\r\n                \"emailOrUserName\": \"Piyush1\"\r\n            },\r\n            \"title\": \"Dummy Post 2\",\r\n            \"content\": \"Dummy Post 2 Description\",\r\n            \"createdAt\": \"2025-04-18T16:57:31.057Z\",\r\n            \"updatedAt\": \"2025-04-19T06:06:11.306Z\",\r\n            \"__v\": 29,\r\n            \"comments\": 36\r\n        },\r\n        {\r\n            \"_id\": \"6802846a505aaf9d0d48804b\",\r\n            \"userId\": {\r\n                \"_id\": \"68028448505aaf9d0d488047\",\r\n                \"emailOrUserName\": \"Piyush1\"\r\n            },\r\n            \"title\": \"Dummy Post 1\",\r\n            \"content\": \"Dummy Post Description\",\r\n            \"createdAt\": \"2025-04-18T16:57:14.569Z\",\r\n            \"updatedAt\": \"2025-04-18T16:57:14.569Z\",\r\n            \"__v\": 0,\r\n            \"comments\": 0\r\n        }\r\n    ]\r\n}"
+						},
+						{
+							"name": "error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/posts/get-post?page=1&limit=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"posts",
+										"get-post"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Create Post",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"title\": \"New Post Title\", \"content\": \"This is the content of the post.\"}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/posts/create-post",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"posts",
+								"create-post"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"title\": \"New Post Title\", \"content\": \"This is the content of the post.\"}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/posts/create-post",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"posts",
+										"create-post"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"message\": \"Post Submitted Successfully\"\r\n}"
+						},
+						{
+							"name": "error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"title\": \"New Post Title\", \"content\": \"This is the content of the post.\"}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/posts/create-post",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"posts",
+										"create-post"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"success\": false,\r\n    \"statusCode\": 500,\r\n    \"message\": \"invalid signature\"\r\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Comment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"This is a comment on the post.\"}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/posts/:postId/add-comment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"posts",
+								":postId",
+								"add-comment"
+							],
+							"variable": [
+								{
+									"key": "postId",
+									"value": "68028484505aaf9d0d48804f"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{authToken}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"comment\": \"This is a comment on the post.\"}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/posts/:postId/add-comment",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"posts",
+										":postId",
+										"add-comment"
+									],
+									"variable": [
+										{
+											"key": "postId",
+											"value": "68028484505aaf9d0d48804f"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"message\": \"Comment Added \"\r\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://post-management-backend-seven.vercel.app",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
