@@ -6,7 +6,6 @@ import { errorMiddleware } from "./middleware/errorMiddleWare.js";
 import userRouter from "./routes/UserRoutes.js";
 import postsRouter from "./routes/PostsRoutes.js";
 import commentsRouter from "./routes/CommentsRoutes.js";
-
 config({ path: "./.env" });
 const app = express();
 const port = process.env.PORT || 5000;
