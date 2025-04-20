@@ -12,6 +12,7 @@ const SinglePost = () => {
     allPostLoading,
     hasMore,
     page,
+    setPage,
     comments,
     commentCount,
     setComments,
@@ -35,7 +36,8 @@ const SinglePost = () => {
       await addCommentsApi(comment, id);
       setComment("");
       setCharCount(0);
-      await getCommentsApi(id, page, 10);
+      setPage(1)
+      await getCommentsApi(id, 1, 10);
     } catch (error) {
       console.error("Failed to add comment:", error);
     } finally {
@@ -69,7 +71,9 @@ const SinglePost = () => {
 
   useEffect(() => {
     if (id) {
-      getCommentsApi(id, page, 10);
+      setComments([])
+      setPage(1)
+      getCommentsApi(id, 1, 10);
     }
 
     // Scroll to top when post loads
